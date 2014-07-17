@@ -71,7 +71,6 @@ describe('MakeDrive Client API', function(){
         // Write a file and try to sync
         fs.writeFile(filename, fileData, function(err) {
           expect(err).not.to.exist;
-
           sync.request('/');
         });
       });

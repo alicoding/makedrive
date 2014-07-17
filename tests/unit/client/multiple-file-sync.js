@@ -32,9 +32,7 @@ describe('MakeDrive Client - sync multiple files', function(){
       };
 
       sync.once('connected', function onConnected() {
-console.log('before createFilesystemLayout');
         util.createFilesystemLayout(fs, layout, function(err) {
-console.log('after createFilesystemLayout');
           expect(err).not.to.exist;
 
           sync.request('/');
@@ -42,33 +40,30 @@ console.log('after createFilesystemLayout');
       });
 
       sync.once('completed', function onUpstreamCompleted() {
-console.log('before disconnect');
         sync.disconnect();
-console.log('after disconnect');
       });
 
       sync.once('disconnected', function onDisconnected() {
-console.log('before deleteFilesystemLayout');
         util.deleteFilesystemLayout(fs, null, function(err) {
-console.log('after deleteFilesystemLayout');
           expect(err).not.to.exist;
 
           // Re-sync with server and make sure we get our files back
           sync.once('connected', function onSecondDownstreamSync() {
-console.log('before re-disconnect');
             sync.disconnect();
-console.log('after re-disconnect');
-console.log('before ensureFilesystem');
+
             util.ensureFilesystem(fs, layout, function(err) {
-console.log('after ensureFilesystem');
               expect(err).not.to.exist;
 
               done();
             });
           });
-console.log('before reconnect');
-          sync.connect(util.socketURL, result.token);
-console.log('after reconnect');
+
+          // Get a new token for this second connection
+          util.getWebsocketToken(result, function(err, result) {
+            expect(err).not.to.exist;
+
+            sync.connect(util.socketURL, result.token);
+          });
         });
       });
 

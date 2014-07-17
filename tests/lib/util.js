@@ -582,6 +582,8 @@ function ensureFilesystemLayout(fs, layout, callback) {
         fsListing = stripModified(fsListing);
         fs2Listing = stripModified(fs2Listing);
 
+console.log('fsListing', fsListing);
+console.log('fs2isting', fs2Listing);
         expect(fsListing).to.deep.equal(fs2Listing);
         callback();
       });
